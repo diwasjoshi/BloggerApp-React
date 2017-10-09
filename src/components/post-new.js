@@ -7,21 +7,28 @@ import _ from 'lodash';
 class PostNew extends Component{
 
     renderField(field){
+        const divClassName = `form-group ${field.meta.touched && field.meta.error ? 'has-danger' : ''}`;
         return(
-            <div>
+            <div className={divClassName}>
                 <label>{field.label}</label>
                 <input
                     className="form-control"
                     type="text"
                     {...field.input}
                 />
-                {field.meta.error}
+                <div className="text-help">
+                    {field.meta.touched ? field.meta.error : ""}
+                </div>
             </div>
         )
     }
+    onSubmit(values){
+        console.log(values);
+    }
     render(){
+        const { handleSubmit } = this.props;
         return(
-            <form>
+            <form onSubmit={handleSubmit(this.onSubmit.bind(this))}>
                 <Field
                     label="Title"
                     name="title"
@@ -37,6 +44,7 @@ class PostNew extends Component{
                     name="content"
                     component={this.renderField}
                 />
+                <button type="submit" className="btn btn-primary">Submit</button>
             </form>
         )
     }
@@ -51,7 +59,7 @@ function validate(values){
     if(!values.content)
         errors.content = "Enter some content please";
 
-    return error;
+    return errors;
 }
 export default reduxForm({
     validate,
